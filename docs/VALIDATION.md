@@ -1,4 +1,23 @@
-# Desktop Cat v0.2.0 — validation record
+# Desktop Cat v0.3.0 — validation record
+
+Date: 2026-11-05
+
+## Current anatomy / animation rewrite
+
+Source revision: `fceb990` on `arena/5ade095f-wincat`.
+
+- [Complete Windows + Linux test run](https://github.com/shohan-55/wincat/actions/runs/42074728797): **passed**.
+- [Download v0.3 Windows x64 artifact ZIP](https://github.com/shohan-55/wincat/actions/runs/42074728797/artifacts/13439315017).
+
+The ZIP includes `Desktop-Cat-0.3.0-Setup-x64.exe`, `Desktop-Cat-0.3.0-Portable-x64.exe`, `SHA256SUMS.txt` and `smoke-report.json`.
+
+Verified: 28 unit tests, 8 Chromium/WebGL tests, Windows native-hook self-test, packaged app launch/WebGL/transparency/lifecycle/settings smoke checks. Both jobs passed. See [MOTION.md](MOTION.md) for the anatomical/motion changes, preview controls and remaining realism limitations. These tests validate the mechanics and launch behavior, not photorealism or physical Windows 10/11 acceptance.
+
+The application is still an unsigned pre-release with a procedural character. Professional character modeling/rigging/grooming and real-device visual/performance review remain release gates.
+
+---
+
+# Historical v0.2.0 validation record
 
 Date: 2026-11-05
 

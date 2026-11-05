@@ -4,6 +4,12 @@ An Electron + Three.js Windows desktop companion with a separate control panel a
 
 **v0.3.0 — development / pre-release.** The product's photorealistic, professionally rigged kitten is not included. Windows packaging and automated launch smoke tests run through GitHub Actions; see the workflow results for the exact build status. Real Windows 10/11 desktop acceptance testing remains required before calling this production-ready.
 
+## Download current test build
+
+[Windows x64 v0.3 installer + portable ZIP](https://github.com/shohan-55/wincat/actions/runs/42074728797/artifacts/13439315017) · [passed build/checks](https://github.com/shohan-55/wincat/actions/runs/42074728797).
+
+The v0.3 rewrite replaces the upright toy silhouette, leg pendulums and squashed-eye blinks with quadruped proportions, IK limbs, walk/trot footfall timing, eyelids and a skinned tail. Use **Animation preview** in the control panel to inspect each motion. It remains procedural, **not photorealistic**. See [motion notes](docs/MOTION.md) and [validation](docs/VALIDATION.md).
+
 ## Run
 
 Node.js 22+ is required **for development only**.
