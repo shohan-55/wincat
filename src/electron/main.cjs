@@ -271,12 +271,13 @@ function applySettings(previous) {
   if (previous.startWithWindows !== settings.startWithWindows) {
     try {
       const portable = !!process.env.PORTABLE_EXECUTABLE_FILE;
-      if (portable && settings.startWithWindows) {
+      if ((!app.isPackaged || portable) && settings.startWithWindows) {
         settings.startWithWindows = false;
         healthError =
-          "Automatic startup is supported by the installed app, not the portable build.";
+          "Automatic startup is supported by the installed app, not development or portable builds.";
       } else
         app.setLoginItemSettings({
+          name: "Desktop Cat",
           openAtLogin: settings.startWithWindows,
           path: app.getPath("exe"),
         });
@@ -394,8 +395,10 @@ function tick() {
       if (!toyWindow.isVisible()) toyWindow.showInactive();
       toyWindow.webContents.send("input", { toy: t, paused });
     }
-  } else if (toyWindow && !toyWindow.isDestroyed() && toyWindow.isVisible())
+  } else if (toyWindow && !toyWindow.isDestroyed() && toyWindow.isVisible()) {
+    toyWindow.webContents.send("input", { toy: null });
     toyWindow.hide();
+  }
 }
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
@@ -458,6 +461,14 @@ else {
           },
           onHealth: (s) => {
             inputHealth = s;
+            if (s.mode !== "hook") {
+              nativeStatus = {
+                ...nativeStatus,
+                fullscreen: false,
+                game: false,
+              };
+              updateSystemPause();
+            }
             broadcast();
           },
         });
@@ -495,6 +506,15 @@ else {
       });
     })
     .catch((error) => {
+      if (smokeTest) {
+        if (process.env.DESKTOP_CAT_SMOKE_REPORT)
+          fs.writeFileSync(
+            process.env.DESKTOP_CAT_SMOKE_REPORT,
+            JSON.stringify({ passed: false, error: error.message }),
+          );
+        app.exit(1);
+        return;
+      }
       dialog.showErrorBox("Desktop Cat could not start", error.message);
       quitting = true;
       app.quit();

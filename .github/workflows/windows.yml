@@ -24,6 +24,7 @@ jobs:
   package:
     needs: test
     runs-on: windows-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,7 +35,14 @@ jobs:
         with:
           arch: x64
       - run: npm ci
-      - run: npm run dist:win
+      - name: Build Windows application
+        run: |
+          npm run dist:win 2>&1 | Tee-Object -FilePath windows-build.log
+          $code = $LASTEXITCODE
+          if ($code -ne 0) {
+            Get-Content windows-build.log -Tail 60 | ForEach-Object { $line = $_ -replace '%', '%25' -replace "`r", '%0D' -replace "`n", '%0A'; Write-Host "::error::$line" }
+            exit $code
+          }
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
       - name: Native hook self-test
@@ -45,8 +53,9 @@ jobs:
         env:
           DESKTOP_CAT_SMOKE_REPORT: ${{ github.workspace }}\release\smoke-report.json
         run: |
-          $process = Start-Process -FilePath "release/win-unpacked/Desktop Cat.exe" -ArgumentList "--smoke-test" -Wait -PassThru
-          if ($process.ExitCode -ne 0) { Get-Content release/smoke-report.json; throw "Packaged app smoke test failed" }
+          $process = Start-Process -FilePath "release/win-unpacked/Desktop Cat.exe" -ArgumentList "--smoke-test" -PassThru
+          if (-not $process.WaitForExit(60000)) { Stop-Process -Id $process.Id -Force; Write-Host "::error::Packaged launch timed out"; exit 1 }
+          if ($process.ExitCode -ne 0) { Get-Content release/smoke-report.json | ForEach-Object { Write-Host "::error::$_" }; throw "Packaged app smoke test failed" }
           $report = Get-Content release/smoke-report.json | ConvertFrom-Json
           if (-not $report.passed) { throw "Packaged app smoke report did not pass" }
           Get-Content release/smoke-report.json

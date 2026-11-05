@@ -62,13 +62,13 @@ if (overlay) {
       snapshot = v.snapshot;
       receivedAt = performance.now();
     }
-    if (v.toy) toy = v.toy;
+    if (Object.hasOwn(v, "toy")) toy = v.toy;
     onBattery = v.onBattery === true;
   });
   function loop(now) {
     frame = requestAnimationFrame(loop);
     const limit =
-      state.hidden || state.systemPaused
+      (isToy && !toy) || state.hidden || state.systemPaused
         ? 2
         : state.paused
           ? 5
@@ -106,7 +106,8 @@ if (overlay) {
     }
     if (!scene) return;
     if (qualityRequested !== state.settings.quality) {
-      ((qualityRequested = state.settings.quality), (fastSamples = 0));
+      qualityRequested = state.settings.quality;
+      fastSamples = 0;
       reduced = 0;
       slowSamples = 0;
     }

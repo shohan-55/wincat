@@ -50,7 +50,9 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "perMachine": false,
-      "artifactName": "Desktop-Cat-${version}-Setup-${arch}.${ext}"
+      "artifactName": "Desktop-Cat-${version}-Setup-${arch}.${ext}",
+      "include": "scripts/installer.nsh",
+      "allowElevation": false
     },
     "extraResources": [
       {

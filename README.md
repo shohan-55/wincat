@@ -81,7 +81,7 @@ Context isolation, renderer sandboxing, a narrow preload API, sender validation,
 
 ```sh
 npm test               # 15 tests
-npm run test:browser   # 4 browser integration tests
+npm run test:browser   # 5 browser integration tests
 npm run build
 npm audit --omit=dev
 ```

@@ -69,3 +69,16 @@ test("behavior sliders, toy session, general settings and help are reachable", a
     page.getByText("not a production-certified release.", { exact: false }),
   ).toBeVisible();
 });
+
+test("high-quality coat streams the bundled 4K detail map", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Appearance", exact: true }).click();
+  const detail = page.waitForResponse(
+    (r) => r.url().includes("fur-detail-4k") && r.status() === 200,
+  );
+  await page.locator("#quality").selectOption("high");
+  await detail;
+  await expect(page.locator("#quality")).toHaveValue("high");
+});
