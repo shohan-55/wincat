@@ -22,7 +22,6 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
   package:
-    needs: test
     runs-on: windows-latest
     timeout-minutes: 15
     steps:
@@ -77,3 +76,5 @@ jobs:
           path: |
             release/smoke-report.json
             release/builder-debug.yml
+            native/bin/*.json
+            windows-build.log

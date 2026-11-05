@@ -29,7 +29,7 @@ async function smoke({
           await once(pet.webContents, "did-finish-load");
         await delay(1000);
         check(
-          "transparent borderless nonfocusable pet",
+          "pet is nonfocusable and always on top",
           pet.isFocusable() === false && pet.isAlwaysOnTop() === true,
         );
         check(
