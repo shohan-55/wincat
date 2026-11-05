@@ -17,7 +17,7 @@ class CatBrain {
     this.lastMouse = null;
     this.clickId = 0;
     this.reactionCooldown = 0;
-    this.energy = 1;
+    this.velocity = { x: 0, y: 0 };
     this.clamp();
   }
   resize(bounds) {
@@ -71,6 +71,8 @@ class CatBrain {
   }
   update(dt, s, input = {}) {
     dt = Math.min(0.05, Math.max(0, dt));
+    const beforeX = this.x,
+      beforeY = this.y;
     this.phase += dt;
     this.stateTime += dt;
     this.timer -= dt;
@@ -197,10 +199,23 @@ class CatBrain {
               ? 125
               : 85) * s.speed;
         const speed = Math.min(max, Math.max(0, (dist - stop) * 3));
-        vx = (dx / dist) * speed;
-        vy = (dy / dist) * speed;
-        this.x += vx * dt;
-        this.y += vy * dt;
+        const desiredX = (dx / dist) * speed,
+          desiredY = (dy / dist) * speed;
+        const deltaX = desiredX - this.velocity.x,
+          deltaY = desiredY - this.velocity.y;
+        const deltaLength = Math.hypot(deltaX, deltaY);
+        const acceleration = this.state === "Running" ? 600 : 400;
+        const blend =
+          deltaLength > 0 ? Math.min(1, (acceleration * dt) / deltaLength) : 0;
+        vx = this.velocity.x + deltaX * blend;
+        vy = this.velocity.y + deltaY * blend;
+        // Finish a step without overshooting the cursor's personal space.
+        const step = Math.min(
+          1,
+          (dist - stop) / Math.max(0.000001, Math.hypot(vx, vy) * dt),
+        );
+        this.x += vx * dt * step;
+        this.y += vy * dt * step;
       } else if (this.route.length) this.target = this.route.shift();
       else this.stop(s.pawInteraction ? "Pawing" : "Sitting", 2);
     }
@@ -215,6 +230,11 @@ class CatBrain {
       this.y += vy * dt;
     }
     this.clamp();
+    if (dt > 0) {
+      vx = (this.x - beforeX) / dt;
+      vy = (this.y - beforeY) / dt;
+    }
+    this.velocity = { x: vx, y: vy };
     return {
       x: this.x,
       y: this.y,

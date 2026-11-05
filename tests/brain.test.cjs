@@ -87,3 +87,22 @@ test("cursor approach stops short of pointer", async () => {
     b.update(0.016, { ...defaults, randomWalking: false }, { mouse });
   assert.ok(Math.hypot(b.x - mouse.x, b.y - mouse.y) >= 80);
 });
+
+test("walk starts with bounded acceleration rather than instant full speed", async () => {
+  const { CatBrain } = await brain();
+  const b = new CatBrain({ x: 0, y: 0, width: 1920, height: 1080 }, () => 0.5);
+  b.navigate({ x: 400, y: 400 }, "Investigating", 12);
+  let previous = { x: 0, y: 0 };
+  for (let i = 0; i < 40; i++) {
+    const result = b.update(0.016, {
+      ...defaults,
+      cursorChasing: false,
+      randomWalking: false,
+    });
+    assert.ok(
+      Math.hypot(result.vx - previous.x, result.vy - previous.y) <=
+        400 * 0.016 + 0.001,
+    );
+    previous = { x: result.vx, y: result.vy };
+  }
+});

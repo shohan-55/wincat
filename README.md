@@ -2,7 +2,7 @@
 
 An Electron + Three.js Windows desktop companion with a separate control panel and an original procedural kitten named **Mochi**.
 
-**v0.2.0 — development / pre-release.** The product's photorealistic, professionally rigged kitten is not included. Windows packaging and automated launch smoke tests run through GitHub Actions; see the workflow results for the exact build status. Real Windows 10/11 desktop acceptance testing remains required before calling this production-ready.
+**v0.3.0 — development / pre-release.** The product's photorealistic, professionally rigged kitten is not included. Windows packaging and automated launch smoke tests run through GitHub Actions; see the workflow results for the exact build status. Real Windows 10/11 desktop acceptance testing remains required before calling this production-ready.
 
 ## Run
 
@@ -36,8 +36,8 @@ npm run dist:win
 
 Expected outputs:
 
-- `release/Desktop-Cat-0.2.0-Setup-x64.exe` — per-user NSIS installer, installation directory selection, desktop/Start Menu shortcuts and uninstaller.
-- `release/Desktop-Cat-0.2.0-Portable-x64.exe` — portable launcher. Startup integration is intentionally disabled in the portable build.
+- `release/Desktop-Cat-0.3.0-Setup-x64.exe` — per-user NSIS installer, installation directory selection, desktop/Start Menu shortcuts and uninstaller.
+- `release/Desktop-Cat-0.3.0-Portable-x64.exe` — portable launcher. Startup integration is intentionally disabled in the portable build.
 
 End users do not need Node.js, Python, Visual Studio or .NET. Electron and the statically linked C++ helper are bundled. Normal operation requires no administrator privileges. These builds are **unsigned**; SmartScreen may warn. Production distribution requires signing, versioned releases and real-device verification.
 
@@ -59,7 +59,7 @@ The Windows runner is Windows Server, **not** a substitute for Windows 10/11 use
 - Global cursor tracking, chasing with a stopping distance, paw/pounce reactions, click investigation, surprised recoil and varied idle states. Input is never injected or modified.
 - Monitor-aware routing through adjacent display seams, including negative origins and L-shaped layouts. One kitten—not a separate copy per monitor. Disconnected displays are deliberately not crossed via teleportation; use Restart cat with the panel on the desired display.
 - Bouncing desktop ball, friction, wall collisions, paw impulses, 30-second expiry and immediate removal when disabled. Ball input is also click-through.
-- Five coat colors, smooth procedural pose blending, blinking, head/ear/tail motion, yawning, stretching, grooming, sleeping and gait poses. High quality loads an original **4096×4096 fur microdetail bump texture**; lower modes use 1024×1024. This is not a realistic hair groom or a 4K scanned character.
+- Five coat colors, an elongated quadruped body, continuous limb surfaces with joint IK, a four-beat walk and diagonal trot, speed-driven stride timing, eyelid blinks, independent gaze/ears, a skinned tail and blended sitting/sleeping/grooming poses. High quality loads an original **4096×4096 fur microdetail bump texture**; lower modes use 1024×1024. This is not a realistic hair groom or a 4K scanned character.
 - Separate dashboard, controls, settings, local persistence, tray commands, Windows login startup and defaults restore. No menu opens from the cat.
 - Native fullscreen-window detection and Windows Direct3D-fullscreen notification detection; configurable automatic hiding/pausing. Battery-aware and sustained-low-FPS quality reduction with gradual recovery.
 - Reduced rendering while sleeping/paused; hidden/fullscreen pets stop rendering. Main simulation pauses while hidden. Renderer-crash/context-loss recovery is bounded to three retries, then a visible error rather than an infinite restart loop.
@@ -80,8 +80,8 @@ Context isolation, renderer sandboxing, a narrow preload API, sender validation,
 ## Tests
 
 ```sh
-npm test               # 19 tests
-npm run test:browser   # 6 browser integration tests
+npm test               # 27 tests
+npm run test:browser   # 8 browser integration tests
 npm run build
 npm audit --omit=dev
 ```

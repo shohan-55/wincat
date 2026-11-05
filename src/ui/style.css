@@ -1059,3 +1059,29 @@ hr {
 html.pet-root {
   background: transparent !important;
 }
+.motion-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 22px;
+  background: #ffffffc4;
+  border-top: 1px solid #e4e8df;
+}
+.motion-controls label {
+  font-size: 10px;
+  color: #6c806b;
+}
+.motion-controls select {
+  padding: 6px 9px;
+  min-width: 110px;
+}
+.motion-controls small {
+  font-size: 8px;
+  color: #9aa393;
+  margin-left: auto;
+}
+.settings-card .motion-controls {
+  border-radius: 8px;
+  background: #f4f6f0;
+}

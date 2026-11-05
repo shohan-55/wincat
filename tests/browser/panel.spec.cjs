@@ -117,3 +117,73 @@ test("pet overlay has no opaque HTML background and exposes no controls", async 
   await expect(page.locator('button,nav,[role="dialog"]')).toHaveCount(0);
   await expect(page.locator("canvas")).toBeVisible();
 });
+
+test("motion preview exposes walk, trot and resting poses without changing preferences", async ({
+  page,
+}) => {
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto("/");
+  for (const name of [
+    "Walking",
+    "Running",
+    "Sitting",
+    "Sleeping",
+    "Stretching",
+    "Grooming",
+    "Pawing",
+    "Pouncing",
+    "Yawning",
+    "Idle",
+  ]) {
+    await page.locator("#motion-preview").selectOption(name);
+    await expect(page.locator("#cat")).toHaveAttribute("data-motion", name);
+    if (name === "Running")
+      await expect(page.locator("#cat")).toHaveAttribute(
+        "data-gait",
+        "diagonal-trot",
+      );
+  }
+  expect(errors).toEqual([]);
+  expect(
+    await page.evaluate(() => localStorage.getItem("desktop-cat")),
+  ).toBeNull();
+});
+
+test("native vertical movement reaches the quadruped animation renderer", async ({
+  page,
+}) => {
+  const settings = require("../../src/shared/defaults.json");
+  await page.addInitScript((settings) => {
+    window.desktopCat = {
+      getState: async () => ({
+        settings,
+        paused: false,
+        hidden: false,
+        systemPaused: false,
+      }),
+      onState: () => {},
+      onInput: (cb) =>
+        cb({
+          snapshot: {
+            state: "Walking",
+            phase: 1,
+            look: { x: 0, y: 1 },
+            vx: 0,
+            vy: 85,
+          },
+        }),
+      telemetry: () => {},
+    };
+  }, settings);
+  await page.goto("/?overlay=pet");
+  await expect(page.locator("canvas")).toHaveAttribute(
+    "data-motion",
+    "Walking",
+  );
+  await expect(page.locator("canvas")).toHaveAttribute(
+    "data-gait",
+    "four-beat-walk",
+  );
+  await expect(page.locator("canvas")).toBeVisible();
+});

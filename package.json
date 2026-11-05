@@ -1,6 +1,6 @@
 {
   "name": "desktop-cat",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Your little 3D desktop companion",
   "main": "src/electron/main.cjs",
   "author": "Desktop Cat",
