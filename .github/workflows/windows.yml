@@ -44,6 +44,20 @@ jobs:
           }
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
+      - name: Publish native build diagnostics
+        if: failure()
+        run: |
+          $files = Get-ChildItem native/bin/*.json -ErrorAction SilentlyContinue
+          if (-not $files) { Write-Host "::error::No native compiler result file was created." }
+          foreach ($file in $files) {
+            $text = (Get-Content $file.FullName -Raw) -replace '%', '%25' -replace "`r", '%0D' -replace "`n", '%0A'
+            Write-Host "::error title=Native compiler result::$text"
+          }
+          if (Test-Path windows-build.log) {
+            $tail = (Get-Content windows-build.log -Tail 35) -join "`n"
+            $tail = $tail -replace '%', '%25' -replace "`r", '%0D' -replace "`n", '%0A'
+            Write-Host "::error title=Windows build log::$tail"
+          }
       - name: Native hook self-test
         run: |
           & ./native/bin/desktop-cat-input.exe --self-test
