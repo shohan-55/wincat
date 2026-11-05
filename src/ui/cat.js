@@ -541,9 +541,7 @@ export function createCatScene(canvas, { overlay = false } = {}) {
     torso.rotation.y = Math.sin(cycle) * 0.015 * pose.move;
     torso.rotation.z = Math.sin(cycle) * 0.012 * pose.move;
     abdomen.scale.y = 1 + breathing;
-    const suspension = pose.running
-      ? Math.cos(cycle * 2) * 0.024 * pose.move
-      : 0;
+    const suspension = Math.cos(cycle * 2) * 0.024 * pose.move * pose.trot;
     torso.position.y += suspension;
     neck.position.set(
       0,

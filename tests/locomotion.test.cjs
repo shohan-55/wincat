@@ -81,3 +81,19 @@ test("pose blending is elapsed-time based and never snaps into sleeping", async 
   for (let i = 0; i < 30; i++) b.update(1 / 30, "Sleeping");
   assert.ok(Math.abs(a.weights.sleep - b.weights.sleep) < 1e-9);
 });
+
+test("switching from walk to trot crossfades paws instead of popping to a new phase", async () => {
+  const { FelineMotion, LEG_ORDER } = await load();
+  const m = new FelineMotion();
+  let previous;
+  for (let i = 0; i < 60; i++)
+    previous = m.update(1 / 60, "Walking", { x: 85, y: 0 });
+  const changed = m.update(0, "Running", { x: 190, y: 0 });
+  for (const name of LEG_ORDER) {
+    assert.equal(changed.feet[name].y, previous.feet[name].y);
+    assert.equal(changed.feet[name].z, previous.feet[name].z);
+  }
+  assert.equal(changed.trot, 0);
+  const next = m.update(1 / 60, "Running", { x: 190, y: 0 });
+  assert.ok(next.trot > 0 && next.trot < 0.2);
+});

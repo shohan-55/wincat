@@ -39,6 +39,7 @@ export class FelineMotion {
   constructor() {
     this.phase = 0;
     this.speed = 0;
+    this.trot = 0;
     this.weights = {
       sit: 0,
       sleep: 0,
@@ -67,6 +68,7 @@ export class FelineMotion {
       : 0;
     this.speed += (targetSpeed - this.speed) * (1 - Math.exp(-9 * dt));
     const running = state === "Running";
+    this.trot += ((running ? 1 : 0) - this.trot) * (1 - Math.exp(-8 * dt));
     // Distance-based cycles. At rest the phase stops, rather than pedalling in place.
     this.phase +=
       (this.speed / (Math.max(0.6, scale) * (running ? 95 : 62))) * dt;
@@ -87,11 +89,14 @@ export class FelineMotion {
     const weight = clamp(this.speed / 35, 0, 1);
     const feet = {};
     for (const name of LEG_ORDER) {
-      const cycle = footCycle(this.phase, name, {
-        running,
-        stride: running ? 0.94 : 0.64,
-      });
-      feet[name] = { ...cycle, y: cycle.y * weight, z: cycle.z * weight };
+      const walk = footCycle(this.phase, name, { stride: 0.64 });
+      const trot = footCycle(this.phase, name, { running: true, stride: 0.94 });
+      const cycle = this.trot > 0.5 ? trot : walk;
+      feet[name] = {
+        ...cycle,
+        y: (walk.y + (trot.y - walk.y) * this.trot) * weight,
+        z: (walk.z + (trot.z - walk.z) * this.trot) * weight,
+      };
     }
     return {
       weights: { ...this.weights },
@@ -99,6 +104,7 @@ export class FelineMotion {
       speed: this.speed,
       phase: this.phase,
       running,
+      trot: this.trot,
       stateTime: this.stateTime,
       move: weight,
     };
