@@ -10,7 +10,7 @@
     "build": "vite build",
     "start": "npm run build && electron .",
     "test": "node --test tests/*.test.cjs",
-    "dist:win": "npm run build:native && npm run build && electron-builder --win nsis portable --x64",
+    "dist:win": "npm run build:native && npm run build && electron-builder --win nsis portable --x64 --publish never",
     "test:browser": "playwright test",
     "build:native": "node scripts/build-native.cjs"
   },
