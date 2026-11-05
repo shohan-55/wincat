@@ -38,6 +38,12 @@ async function smoke({
             '!!document.querySelector("canvas")?.getContext("webgl2")',
           ),
         );
+        check(
+          "overlay document background is transparent",
+          await pet.webContents.executeJavaScript(
+            "getComputedStyle(document.documentElement).backgroundColor === 'rgba(0, 0, 0, 0)' && getComputedStyle(document.body).backgroundColor === 'rgba(0, 0, 0, 0)'",
+          ),
+        );
         command("pause");
         check("pause command", getState().paused);
         command("resume");

@@ -82,3 +82,38 @@ test("high-quality coat streams the bundled 4K detail map", async ({
   await detail;
   await expect(page.locator("#quality")).toHaveValue("high");
 });
+
+test("pet overlay has no opaque HTML background and exposes no controls", async ({
+  page,
+}) => {
+  const settings = require("../../src/shared/defaults.json");
+  await page.addInitScript((settings) => {
+    window.desktopCat = {
+      getState: async () => ({
+        settings,
+        paused: false,
+        hidden: false,
+        systemPaused: false,
+        telemetry: { fps: 0, behavior: "Idle" },
+      }),
+      onState: () => {},
+      onInput: (cb) => {
+        cb({
+          snapshot: { state: "Idle", phase: 1, look: { x: 0, y: 0 }, vx: 0 },
+        });
+      },
+      telemetry: () => {},
+    };
+  }, settings);
+  await page.goto("/?overlay=pet");
+  await expect(page.locator("html")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
+  await expect(page.locator('button,nav,[role="dialog"]')).toHaveCount(0);
+  await expect(page.locator("canvas")).toBeVisible();
+});

@@ -28,6 +28,7 @@ const app = document.querySelector("#app");
 const params = new URLSearchParams(location.search);
 const overlay = params.has("overlay");
 if (overlay) {
+  document.documentElement.classList.add("pet-root");
   document.body.classList.add("overlay");
   app.innerHTML = '<canvas id="cat"></canvas>';
   const canvas = document.querySelector("canvas");

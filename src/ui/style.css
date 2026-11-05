@@ -1055,3 +1055,7 @@ hr {
 .host-notice[hidden] {
   display: none;
 }
+
+html.pet-root {
+  background: transparent !important;
+}
