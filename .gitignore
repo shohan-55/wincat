@@ -1,0 +1,9 @@
+node_modules/
+dist/
+release/
+*.log
+
+test-results/
+playwright-report/
+
+native/bin/
